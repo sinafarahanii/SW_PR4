@@ -1,15 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Thanks for your order!</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <section>
-    <p>
-      We appreciate your business! If you have any questions, please email
-      <a href="mailto:orders@example.com">orders@example.com</a>.
-    </p>
-  </section>
-</body>
-</html>
+<section id="receipt">
+  <p>Loading receipt...</p>
+</section>
+
+<script>
+  async function fetchReceipt() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    console.log(sessionId)
+    if (!sessionId) {
+      document.getElementById("receipt").innerHTML = "<p>Session ID not found.</p>";
+      return;
+    }
+
+    const res = await fetch(`/checkout-session/${sessionId}`);
+    const data = await res.json();
+
+    document.getElementById("receipt").innerHTML = `
+      <h2>Thanks for your order!</h2>
+      <p><strong>Session ID:</strong> ${data.id}</p>
+      <p><strong>Total:</strong> $${(data.amount_total / 100).toFixed(2)} ${data.currency.toUpperCase()}</p>
+      <p><strong>Status:</strong> ${data.status}</p>
+      <p><strong>Payment Status:</strong> ${data.payment_status}</p>
+    `;
+  }
+
+  fetchReceipt();
+</script>
