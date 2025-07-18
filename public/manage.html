@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Management</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h2>Payment Management</h2>
+  <table border="1" id="payments">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Update</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadPayments() {
+      const res = await fetch('/api/payments');
+      const data = await res.json();
+      const tbody = document.querySelector('#payments tbody');
+      tbody.innerHTML = '';
+      data.forEach(p => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${p.session_id}</td>
+          <td>${p.email || '-'}</td>
+          <td>$${(p.amount_total / 100).toFixed(2)} ${p.currency.toUpperCase()}</td>
+          <td>
+            <input value="${p.status}" data-id="${p.id}" />
+          </td>
+          <td>${new Date(p.created_at).toLocaleString()}</td>
+          <td><button onclick="updateStatus(${p.id})">Save</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    async function updateStatus(id) {
+      const input = document.querySelector(`input[data-id="${id}"]`);
+      const res = await fetch(`/api/payments/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: input.value })
+      });
+      if (res.ok) {
+        alert('Updated!');
+        loadPayments();
+      }
+    }
+
+    loadPayments();
+  </script>
+</body>
+</html>

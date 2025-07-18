@@ -1,13 +1,7 @@
-#! /usr/bin/env python3.6
-
-"""
-server.py
-Stripe Sample.
-Python 3.6 or newer required.
-"""
 import json
 from db import init_db, db_session
 from flask import Flask, redirect, request, jsonify
+from flasgger import Swagger
 from models import Subscription, Receipt
 import stripe
 
@@ -19,6 +13,8 @@ stripe.api_key = 'sk_test_51P80mw055qYUKJJtHpafkOLq4zks7y3q5dDJ8LX4UqfXsCie8TWfh
 app = Flask(__name__,
             static_url_path='',
             static_folder='public')
+
+swagger = Swagger(app)
 
 YOUR_DOMAIN = 'http://localhost:4242'
 
@@ -45,6 +41,34 @@ def create_checkout_session():
 
 @app.route('/checkout-session/<session_id>', methods=['GET'])
 def get_checkout_session(session_id):
+    """
+        Get checkout session and save to database
+        ---
+        parameters:
+          - name: session_id
+            in: path
+            type: string
+            required: true
+            description: Stripe session ID
+        responses:
+          200:
+            description: Checkout session retrieved
+            schema:
+              id: Receipt
+              properties:
+                id:
+                  type: string
+                payment_status:
+                  type: string
+                status:
+                  type: string
+                amount_total:
+                  type: integer
+                currency:
+                  type: string
+                email:
+                  type: string
+        """
     try:
         session = stripe.checkout.Session.retrieve(
             session_id,
@@ -72,18 +96,57 @@ def get_checkout_session(session_id):
         return jsonify({'error': str(e)}), 400
 
 
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    resp_dict = json.loads(request.data.decode('utf-8'))
-    id = resp_dict['data']['object']['id']
-    print(id)
-    record = Subscription(id=id)
-    try:
-        db_session.add(record)
-        db_session.commit()
-    except Exception as e:
-        pass
-    return jsonify({'status': 'success'})
+@app.route('/api/payments', methods=['GET'])
+def list_payments():
+    """
+    Get all payments
+    ---
+    responses:
+      200:
+        description: List of payments
+    """
+    receipts = db_session.query(Receipt).all()
+    return jsonify([{
+        'id': r.id,
+        'session_id': r.session_id,
+        'email': r.email,
+        'amount_total': r.amount_total,
+        'currency': r.currency,
+        'status': r.status,
+        'payment_status': r.payment_status,
+        'created_at': r.created_at.isoformat()
+    } for r in receipts])
+
+
+@app.route('/api/payments/<int:receipt_id>', methods=['PATCH'])
+def update_payment_status(receipt_id):
+    """
+    Update payment status
+    ---
+    parameters:
+      - name: receipt_id
+        in: path
+        type: integer
+        required: true
+      - name: status
+        in: body
+        required: true
+        schema:
+          properties:
+            status:
+              type: string
+    responses:
+      200:
+        description: Updated successfully
+    """
+    data = request.json
+    receipt = db_session.query(Receipt).get(receipt_id)
+    if not receipt:
+        return jsonify({'error': 'Receipt not found'}), 404
+
+    receipt.status = data.get('status', receipt.status)
+    db_session.commit()
+    return jsonify({'message': 'Updated'})
 
 
 if __name__ == '__main__':
