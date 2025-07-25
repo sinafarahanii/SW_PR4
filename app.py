@@ -32,7 +32,7 @@ def create_checkout_session():
             ],
             mode='payment',
             success_url=YOUR_DOMAIN + '/success.html?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url=YOUR_DOMAIN + '/cancel.html',
+            cancel_url=YOUR_DOMAIN + '/cancel.html?session_id={CHECKOUT_SESSION_ID}',
         )
     except Exception as e:
         return str(e)
@@ -89,7 +89,14 @@ def get_checkout_session(session_id):
             db_session.add(receipt)
             db_session.commit()
 
-        return jsonify(session)
+        return jsonify({
+    'id': session.id,
+    'payment_status': session.payment_status,
+    'status': session.status,
+    'amount_total': session.amount_total,
+    'currency': session.currency,
+    'email': session.customer_details.email if session.customer_details else None
+})
 
     except Exception as e:
         print("Error:", e)
@@ -128,12 +135,12 @@ def update_payment_status(receipt_id):
         in: path
         type: integer
         required: true
-      - name: status
+      - name: payment status
         in: body
         required: true
         schema:
           properties:
-            status:
+            payment_status:
               type: string
     responses:
       200:
@@ -144,7 +151,7 @@ def update_payment_status(receipt_id):
     if not receipt:
         return jsonify({'error': 'Receipt not found'}), 404
 
-    receipt.status = data.get('status', receipt.status)
+    receipt.payment_status = data.get('payment_status', receipt.payment_status)
     db_session.commit()
     return jsonify({'message': 'Updated'})
 

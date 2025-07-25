@@ -3,18 +3,20 @@
 <head>
   <title>Payment Management</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-  <h2>Payment Management</h2>
+  <h1>Payment Management</h1>
   <table border="1" id="payments">
     <thead>
       <tr>
         <th>ID</th>
         <th>Email</th>
         <th>Amount</th>
-        <th>Status</th>
+        <th>Payment Status</th>
         <th>Date</th>
-        <th>Update</th>
+        <th>Refund</th>
+        <th>Receipt</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -26,33 +28,73 @@
       const data = await res.json();
       const tbody = document.querySelector('#payments tbody');
       tbody.innerHTML = '';
+
       data.forEach(p => {
         const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${p.session_id}</td>
-          <td>${p.email || '-'}</td>
-          <td>$${(p.amount_total / 100).toFixed(2)} ${p.currency.toUpperCase()}</td>
-          <td>
-            <input value="${p.status}" data-id="${p.id}" />
-          </td>
-          <td>${new Date(p.created_at).toLocaleString()}</td>
-          <td><button onclick="updateStatus(${p.id})">Save</button></td>
-        `;
+
+        const formatCell = (text) => {
+          const td = document.createElement('td');
+          td.textContent = text;
+          return td;
+        };
+
+        row.appendChild(formatCell(p.session_id));
+        row.appendChild(formatCell(p.email || '-'));
+        const amountStr = `$${(p.amount_total / 100).toFixed(2)} ${p.currency.toUpperCase()}`;
+        row.appendChild(formatCell(amountStr));
+        row.appendChild(formatCell(p.payment_status));
+        const dateStr = new Date(p.created_at).toLocaleString();
+        row.appendChild(formatCell(dateStr));
+
+        // Refund Button
+        const refundCell = document.createElement('td');
+        if (p.payment_status === "paid") {
+          const btn = document.createElement('button');
+          btn.textContent = 'Refund';
+          btn.addEventListener('click', () => refund(p.id));
+          refundCell.appendChild(btn);
+        }
+        row.appendChild(refundCell);
+
+        // Receipt Button
+        const receiptCell = document.createElement('td');
+        const receiptBtn = document.createElement('button');
+        receiptBtn.textContent = 'Receipt';
+        receiptBtn.addEventListener('click', () => generateReceipt(p));
+        receiptCell.appendChild(receiptBtn);
+        row.appendChild(receiptCell);
+
         tbody.appendChild(row);
       });
     }
 
-    async function updateStatus(id) {
-      const input = document.querySelector(`input[data-id="${id}"]`);
+    async function refund(id) {
       const res = await fetch(`/api/payments/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: input.value })
+        body: JSON.stringify({ payment_status: "refunded" })
       });
       if (res.ok) {
         alert('Updated!');
-        loadPayments();
+        location.reload();
       }
+    }
+
+    function generateReceipt(payment) {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(16);
+      doc.text("Payment Receipt", 20, 20);
+      doc.setFontSize(12);
+
+      doc.text(`Session ID: ${payment.session_id}`, 20, 40);
+      doc.text(`Email: ${payment.email || '-'}`, 20, 50);
+      doc.text(`Amount: $${(payment.amount_total / 100).toFixed(2)} ${payment.currency.toUpperCase()}`, 20, 60);
+      doc.text(`Payment Status: ${payment.payment_status}`, 20, 70);
+      doc.text(`Date: ${new Date(payment.created_at).toLocaleString()}`, 20, 80);
+
+      doc.save(`receipt_${payment.session_id}.pdf`);
     }
 
     loadPayments();

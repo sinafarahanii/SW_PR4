@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 database_url = os.environ.get("DATABASE_URL")
+if not database_url:
+    raise RuntimeError("DATABASE_URL environment variable not set")
+
 engine = create_engine(database_url, future=True)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,

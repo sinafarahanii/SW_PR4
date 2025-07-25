@@ -1,12 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Checkout canceled</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <section>
-    <p>Forgot to add something to your cart? Shop around then come back to pay!</p>
-  </section>
-</body>
-</html>
+<section id="receipt">
+  <p>Loading receipt...</p>
+</section>
+
+<script>
+  async function fetchReceipt() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    console.log(sessionId)
+    if (!sessionId) {
+      document.getElementById("receipt").innerHTML = "<p>Session ID not found.</p>";
+      return;
+    }
+
+    const res = await fetch(`/checkout-session/${sessionId}`);
+    const data = await res.json();
+
+    document.getElementById("receipt").innerHTML = `
+      <h2>Your Order got canceled :(</h2>
+      <p><strong>Session ID:</strong> ${data.id}</p>
+      <p><strong>Total:</strong> $${(data.amount_total / 100).toFixed(2)} ${data.currency.toUpperCase()}</p>
+      <p><strong>Status:</strong> ${data.status}</p>
+      <p><strong>Payment Status:</strong> ${data.payment_status}</p>
+      <a href="./checkout.html">go to checkout page</a>
+    `;
+  }
+
+  fetchReceipt();
+</script>
