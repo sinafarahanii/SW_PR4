@@ -24,79 +24,113 @@
 
   <script>
     async function loadPayments() {
-      const res = await fetch('/api/payments');
-      const data = await res.json();
-      const tbody = document.querySelector('#payments tbody');
-      tbody.innerHTML = '';
+      try {
+        console.log("Fetching payment data...");
+        const res = await fetch('/api/payments');
 
-      data.forEach(p => {
-        const row = document.createElement('tr');
-
-        const formatCell = (text) => {
-          const td = document.createElement('td');
-          td.textContent = text;
-          return td;
-        };
-
-        row.appendChild(formatCell(p.session_id));
-        row.appendChild(formatCell(p.email || '-'));
-        const amountStr = `$${(p.amount_total / 100).toFixed(2)} ${p.currency.toUpperCase()}`;
-        row.appendChild(formatCell(amountStr));
-        row.appendChild(formatCell(p.payment_status));
-        const dateStr = new Date(p.created_at).toLocaleString();
-        row.appendChild(formatCell(dateStr));
-
-        // Refund Button
-        const refundCell = document.createElement('td');
-        if (p.payment_status === "paid") {
-          const btn = document.createElement('button');
-          btn.textContent = 'Refund';
-          btn.addEventListener('click', () => refund(p.id));
-          refundCell.appendChild(btn);
+        if (!res.ok) {
+          console.error("Failed to load payments:", res.statusText);
+          alert("Failed to load payments.");
+          return;
         }
-        row.appendChild(refundCell);
 
-        // Receipt Button
-        const receiptCell = document.createElement('td');
-        const receiptBtn = document.createElement('button');
-        receiptBtn.textContent = 'Receipt';
-        receiptBtn.addEventListener('click', () => generateReceipt(p));
-        receiptCell.appendChild(receiptBtn);
-        row.appendChild(receiptCell);
+        const data = await res.json();
+        const tbody = document.querySelector('#payments tbody');
+        tbody.innerHTML = '';
 
-        tbody.appendChild(row);
-      });
+        data.forEach(p => {
+          const row = document.createElement('tr');
+
+          const formatCell = (text) => {
+            const td = document.createElement('td');
+            td.textContent = text;
+            return td;
+          };
+
+          row.appendChild(formatCell(p.session_id));
+          row.appendChild(formatCell(p.email || '-'));
+          const amountStr = `$${(p.amount_total / 100).toFixed(2)} ${p.currency.toUpperCase()}`;
+          row.appendChild(formatCell(amountStr));
+          row.appendChild(formatCell(p.payment_status));
+          const dateStr = new Date(p.created_at).toLocaleString();
+          row.appendChild(formatCell(dateStr));
+
+          // Refund Button
+          const refundCell = document.createElement('td');
+          if (p.payment_status === "paid") {
+            const btn = document.createElement('button');
+            btn.textContent = 'Refund';
+            btn.addEventListener('click', () => refund(p.id));
+            refundCell.appendChild(btn);
+          }
+          row.appendChild(refundCell);
+
+          // Receipt Button
+          const receiptCell = document.createElement('td');
+          const receiptBtn = document.createElement('button');
+          receiptBtn.textContent = 'Receipt';
+          receiptBtn.addEventListener('click', () => generateReceipt(p));
+          receiptCell.appendChild(receiptBtn);
+          row.appendChild(receiptCell);
+
+          tbody.appendChild(row);
+        });
+        console.log("Payments loaded successfully.");
+      } catch (err) {
+        console.error("Error loading payments:", err);
+        alert("An error occurred while loading payments.");
+      }
     }
 
     async function refund(id) {
-      const res = await fetch(`/api/payments/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_status: "refunded" })
-      });
-      if (res.ok) {
-        alert('Updated!');
+      try {
+        console.log(`Attempting refund for receipt ID ${id}...`);
+        const res = await fetch(`/api/payments/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ payment_status: "refunded" })
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.warn("Refund failed:", errorText);
+          alert("Failed to refund payment.");
+          return;
+        }
+
+        alert('Refund successful!');
         location.reload();
+      } catch (err) {
+        console.error("Error during refund:", err);
+        alert("An error occurred while processing the refund.");
       }
     }
 
     function generateReceipt(payment) {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      try {
+        console.log(`Generating receipt for session ${payment.session_id}...`);
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-      doc.setFontSize(16);
-      doc.text("Payment Receipt", 20, 20);
-      doc.setFontSize(12);
+        doc.setFontSize(16);
+        doc.text("Payment Receipt", 20, 20);
+        doc.setFontSize(12);
 
-      doc.text(`Session ID: ${payment.session_id}`, 20, 40);
-      doc.text(`Email: ${payment.email || '-'}`, 20, 50);
-      doc.text(`Amount: $${(payment.amount_total / 100).toFixed(2)} ${payment.currency.toUpperCase()}`, 20, 60);
-      doc.text(`Payment Status: ${payment.payment_status}`, 20, 70);
-      doc.text(`Date: ${new Date(payment.created_at).toLocaleString()}`, 20, 80);
+        doc.text(`Session ID: ${payment.session_id}`, 20, 40);
+        doc.text(`Email: ${payment.email || '-'}`, 20, 50);
+        doc.text(`Amount: $${(payment.amount_total / 100).toFixed(2)} ${payment.currency.toUpperCase()}`, 20, 60);
+        doc.text(`Payment Status: ${payment.payment_status}`, 20, 70);
+        doc.text(`Date: ${new Date(payment.created_at).toLocaleString()}`, 20, 80);
 
-      doc.save(`receipt_${payment.session_id}.pdf`);
+        doc.save(`receipt_${payment.session_id}.pdf`);
+        console.log("Receipt downloaded.");
+      } catch (err) {
+        console.error("Error generating receipt:", err);
+        alert("An error occurred while generating the receipt.");
+      }
     }
 
+    // Initial load
     loadPayments();
   </script>
 </body>

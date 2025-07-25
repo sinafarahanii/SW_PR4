@@ -38,3 +38,34 @@ DB 2025-07-25 20:02:23,407 [INFO] All tables created successfully.
 DB 2025-07-25 20:02:24,156 [INFO] Database initialized and tables created successfully.
 DB 2025-07-25 20:02:24,157 [INFO] Database initialized.
 DB 2025-07-25 20:02:24,192 [INFO]  * Running on http://127.0.0.1:4242/ (Press CTRL+C to quit)
+DB 2025-07-25 20:57:05,357 [INFO] DATABASE_URL loaded successfully.
+DB 2025-07-25 20:57:05,559 [INFO] Database engine created successfully.
+DB 2025-07-25 20:57:05,559 [INFO] Database session configured successfully.
+DB 2025-07-25 20:57:06,064 [WARNING] Dropping all tables (dev-only action).
+DB 2025-07-25 20:57:06,860 [INFO] All tables dropped successfully.
+DB 2025-07-25 20:57:06,861 [INFO] All tables created successfully.
+DB 2025-07-25 20:57:07,818 [INFO] Database initialized and tables created successfully.
+DB 2025-07-25 20:57:07,819 [INFO] Database initialized.
+DB 2025-07-25 20:57:07,879 [INFO]  * Running on http://127.0.0.1:4242/ (Press CTRL+C to quit)
+DB 2025-07-25 20:57:11,169 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:11] "[33mGET / HTTP/1.1[0m" 404 -
+DB 2025-07-25 20:57:11,476 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+DB 2025-07-25 20:57:17,302 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:17] "[36mGET /checkout.html HTTP/1.1[0m" 304 -
+DB 2025-07-25 20:57:17,313 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:17] "[36mGET /style.css HTTP/1.1[0m" 304 -
+DB 2025-07-25 20:57:17,367 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:17] "[36mGET /dog.png HTTP/1.1[0m" 304 -
+DB 2025-07-25 20:57:23,302 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:23] "GET /manage.html HTTP/1.1" 200 -
+DB 2025-07-25 20:57:23,370 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:23] "[36mGET /style.css HTTP/1.1[0m" 304 -
+DB 2025-07-25 20:57:23,429 [INFO] Fetching all receipts from database.
+DB 2025-07-25 20:57:23,514 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:23] "GET /api/payments HTTP/1.1" 200 -
+DB 2025-07-25 20:57:28,502 [INFO] Updating payment status for receipt 8
+DB 2025-07-25 20:57:29,071 [INFO] Payment status for receipt 8 updated to refunded
+DB 2025-07-25 20:57:29,073 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:29] "PATCH /api/payments/8 HTTP/1.1" 200 -
+DB 2025-07-25 20:57:31,320 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:31] "[36mGET /manage.html HTTP/1.1[0m" 304 -
+DB 2025-07-25 20:57:31,373 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:31] "[36mGET /style.css HTTP/1.1[0m" 304 -
+DB 2025-07-25 20:57:31,407 [INFO] Fetching all receipts from database.
+DB 2025-07-25 20:57:31,736 [INFO] 127.0.0.1 - - [25/Jul/2025 20:57:31] "GET /api/payments HTTP/1.1" 200 -
+DB 2025-07-25 21:00:26,882 [INFO] 127.0.0.1 - - [25/Jul/2025 21:00:26] "[36mGET /manage.html HTTP/1.1[0m" 304 -
+DB 2025-07-25 21:00:26,960 [INFO] 127.0.0.1 - - [25/Jul/2025 21:00:26] "[36mGET /style.css HTTP/1.1[0m" 304 -
+DB 2025-07-25 21:00:27,065 [INFO] Fetching all receipts from database.
+DB 2025-07-25 21:00:27,405 [INFO] 127.0.0.1 - - [25/Jul/2025 21:00:27] "GET /api/payments HTTP/1.1" 200 -
+DB 2025-07-25 21:00:30,604 [INFO] 127.0.0.1 - - [25/Jul/2025 21:00:30] "[36mGET /style.css HTTP/1.1[0m" 304 -
+DB 2025-07-25 21:00:30,631 [INFO] 127.0.0.1 - - [25/Jul/2025 21:00:30] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
