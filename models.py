@@ -1,12 +1,38 @@
 import datetime
+import sys
+import logging
 from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy.exc import SQLAlchemyError
 from db import Base, engine
 
-# 🛑 Dev-only schema reset (comment out after use!)
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
+# --- Configure Logging ---
+logging.basicConfig(
+    level=logging.INFO,
+    format="MODELS %(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler("app.log"),
+    ]
+)
+logger = logging.getLogger(__name__)
 
+# --- Schema Reset (Dev Only) ---
+try:
+    logger.warning("Dropping all tables (dev-only action).")
+    Base.metadata.drop_all(bind=engine)
+    logger.info("All tables dropped successfully.")
+except SQLAlchemyError as e:
+    logger.exception("Failed to drop tables.")
+    raise
 
+try:
+    Base.metadata.create_all(bind=engine)
+    logger.info("All tables created successfully.")
+except SQLAlchemyError as e:
+    logger.exception("Failed to create tables.")
+    raise
+
+# --- Models ---
 class Subscription(Base):
     __tablename__ = 'Subscriptions'
     id = Column(String, primary_key=True)

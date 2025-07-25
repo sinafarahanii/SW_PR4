@@ -1,0 +1,40 @@
+2025-07-25 19:39:25,115 [INFO] DATABASE_URL loaded successfully.
+2025-07-25 19:39:25,206 [INFO] Database engine created successfully.
+2025-07-25 19:39:25,207 [INFO] Database session configured successfully.
+2025-07-25 19:39:26,490 [INFO] Database initialized and tables created successfully.
+2025-07-25 19:39:26,527 [INFO]  * Running on http://127.0.0.1:4242/ (Press CTRL+C to quit)
+DB 2025-07-25 19:44:46,292 [INFO] DATABASE_URL loaded successfully.
+DB 2025-07-25 19:44:46,360 [INFO] Database engine created successfully.
+DB 2025-07-25 19:44:46,361 [INFO] Database session configured successfully.
+DB 2025-07-25 19:44:46,539 [WARNING] Dropping all tables (dev-only action).
+DB 2025-07-25 19:44:47,976 [INFO] All tables dropped successfully.
+DB 2025-07-25 19:44:47,979 [INFO] All tables created successfully.
+DB 2025-07-25 19:44:48,415 [INFO] Database initialized and tables created successfully.
+DB 2025-07-25 19:44:48,455 [INFO]  * Running on http://127.0.0.1:4242/ (Press CTRL+C to quit)
+DB 2025-07-25 19:55:26,051 [INFO] DATABASE_URL loaded successfully.
+DB 2025-07-25 19:55:26,105 [INFO] Database engine created successfully.
+DB 2025-07-25 19:55:26,105 [INFO] Database session configured successfully.
+DB 2025-07-25 19:55:26,246 [WARNING] Dropping all tables (dev-only action).
+DB 2025-07-25 19:55:27,243 [INFO] All tables dropped successfully.
+DB 2025-07-25 19:55:27,244 [INFO] All tables created successfully.
+DB 2025-07-25 19:55:27,709 [INFO] Database initialized and tables created successfully.
+DB 2025-07-25 19:55:27,710 [INFO] Database initialized.
+DB 2025-07-25 19:55:27,736 [INFO]  * Running on http://127.0.0.1:4242/ (Press CTRL+C to quit)
+DB 2025-07-25 19:58:43,952 [INFO] DATABASE_URL loaded successfully.
+DB 2025-07-25 19:58:44,012 [INFO] Database engine created successfully.
+DB 2025-07-25 19:58:44,012 [INFO] Database session configured successfully.
+DB 2025-07-25 19:58:44,154 [WARNING] Dropping all tables (dev-only action).
+DB 2025-07-25 19:58:45,110 [INFO] All tables dropped successfully.
+DB 2025-07-25 19:58:45,111 [INFO] All tables created successfully.
+DB 2025-07-25 19:58:45,809 [INFO] Database initialized and tables created successfully.
+DB 2025-07-25 19:58:45,809 [INFO] Database initialized.
+DB 2025-07-25 19:58:45,823 [INFO]  * Running on http://127.0.0.1:4242/ (Press CTRL+C to quit)
+DB 2025-07-25 20:02:21,906 [INFO] DATABASE_URL loaded successfully.
+DB 2025-07-25 20:02:21,974 [INFO] Database engine created successfully.
+DB 2025-07-25 20:02:21,975 [INFO] Database session configured successfully.
+DB 2025-07-25 20:02:22,148 [WARNING] Dropping all tables (dev-only action).
+DB 2025-07-25 20:02:23,405 [INFO] All tables dropped successfully.
+DB 2025-07-25 20:02:23,407 [INFO] All tables created successfully.
+DB 2025-07-25 20:02:24,156 [INFO] Database initialized and tables created successfully.
+DB 2025-07-25 20:02:24,157 [INFO] Database initialized.
+DB 2025-07-25 20:02:24,192 [INFO]  * Running on http://127.0.0.1:4242/ (Press CTRL+C to quit)
